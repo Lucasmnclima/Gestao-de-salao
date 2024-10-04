@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Gestao_de_salao.Models
 {
     [Table("Pagamentos")]
-    public class Pagamento
+    public class Pagamento : LinksHATEOS
     {
         [Key]
         public int Id { get; set; }

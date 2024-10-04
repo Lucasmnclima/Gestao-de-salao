@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Gestao_de_salao.Models
 {
     [Table("Saloes")]
-    public class Salao
+    public class Salao : LinksHATEOS
     {
         [Key]
         public int Id { get; set; }
