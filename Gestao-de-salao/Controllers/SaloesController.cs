@@ -41,9 +41,38 @@ namespace Gestao_de_salao.Controllers
             var model = await _context.Saloes
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (model == null) NotFound();
+            if (model == null) return NotFound();
 
             return Ok(model);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, Salao model)
+        {
+            if (id != model.Id) return BadRequest();
+
+            var modeloDb = await _context.Saloes.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (modeloDb == null) return NotFound();
+
+            _context.Saloes.Update(model);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var model = await _context.Saloes.FindAsync(id);
+
+            if (model == null) return NotFound();
+
+            _context.Saloes.Remove(model);
+            await _context.SaveChangesAsync();
+
+            return NoContent(); 
         }
     }
 }

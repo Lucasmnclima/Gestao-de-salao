@@ -18,5 +18,6 @@ namespace Gestao_de_salao.Models
         public int AnoComeco { get; set; }
         [Required]
         public int AnoCadastro { get; set; }
+        public ICollection<Pagamento> Pagamentos { get; set; }
     }
 }

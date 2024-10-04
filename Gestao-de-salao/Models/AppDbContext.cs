@@ -7,5 +7,6 @@ namespace Gestao_de_salao.Models
         {
         }
         public DbSet<Salao> Saloes { get; set; }
+        public DbSet<Pagamento> Pagamentos { get; set; }
     }
 }
