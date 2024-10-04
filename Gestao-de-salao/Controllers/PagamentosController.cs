@@ -7,10 +7,10 @@ namespace Gestao_de_salao.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SaloesController : ControllerBase
+    public class PagamentosController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public SaloesController(AppDbContext context)
+        public PagamentosController(AppDbContext context)
         {
             _context = context;
         }
@@ -18,28 +18,30 @@ namespace Gestao_de_salao.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var model = await _context.Saloes.ToListAsync();
+            var model = await _context.Pagamentos.ToListAsync();
             return Ok(model);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Salao model)
+        public async Task<ActionResult> Create(Pagamento model)
         {
-            if(model.AnoComeco <= 0 || model.AnoCadastro <= 0)
+        
+            var salaoExists = await _context.Saloes.AnyAsync(s => s.Id == model.SalaoId);
+            if (!salaoExists)
             {
-                return BadRequest(new { message = "Por favor, informe um ano válido" });
-            } 
-
-            _context.Saloes.Add(model);
+                return BadRequest("SalaoId não existe.");
+            }
+    
+            _context.Pagamentos.Add(model);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetById", new {id = model.Id}, model);
+            return CreatedAtAction("GetById", new { id = model.Id }, model);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var model = await _context.Saloes
-                .Include(t => t.Pagamentos)
+            var model = await _context.Pagamentos
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (model == null) return NotFound();
@@ -48,16 +50,16 @@ namespace Gestao_de_salao.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Salao model)
+        public async Task<ActionResult> Update(int id, Pagamento model)
         {
             if (id != model.Id) return BadRequest();
 
-            var modeloDb = await _context.Saloes.AsNoTracking()
+            var modeloDb = await _context.Pagamentos.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (modeloDb == null) return NotFound();
 
-            _context.Saloes.Update(model);
+            _context.Pagamentos.Update(model);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -66,14 +68,14 @@ namespace Gestao_de_salao.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var model = await _context.Saloes.FindAsync(id);
+            var model = await _context.Pagamentos.FindAsync(id);
 
             if (model == null) return NotFound();
 
-            _context.Saloes.Remove(model);
+            _context.Pagamentos.Remove(model);
             await _context.SaveChangesAsync();
 
-            return NoContent(); 
+            return NoContent();
         }
     }
 }
